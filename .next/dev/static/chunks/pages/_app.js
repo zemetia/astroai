@@ -1,0 +1,13 @@
+__turbopack_load_page_chunks__("/_app", [
+  "static/chunks/488e3_next_dist_compiled_bb4a7fce._.js",
+  "static/chunks/488e3_next_dist_shared_lib_0f412e6e._.js",
+  "static/chunks/488e3_next_dist_client_b268dc6c._.js",
+  "static/chunks/488e3_next_dist_3be1b171._.js",
+  "static/chunks/488e3_next_app_bf629d45.js",
+  "static/chunks/[next]_entry_page-loader_ts_bcadd7d6._.js",
+  "static/chunks/488e3_react-dom_4fb8246c._.js",
+  "static/chunks/488e3_09d80956._.js",
+  "static/chunks/[root-of-the-server]__86005413._.js",
+  "static/chunks/projects_astroai_pages__app_2da965e7._.js",
+  "static/chunks/turbopack-projects_astroai_pages__app_dfbb9185._.js"
+])

@@ -13,6 +13,8 @@ export interface RelocationHistory {
 }
 
 export interface PersonalContext {
+  chartId?: string;                // Reference to the chart
+  
   // Demographics
   ethnicity?: string;              // Suku/bangsa: Jawa, Sunda, Batak, Chinese, etc
   ethnicityDetail?: string;        // Detail spesifik (misal: Batak Toba, Jawa Surabaya)
