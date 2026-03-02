@@ -110,6 +110,22 @@ Yang penting: **Jangan jadikan ini sebagai excuse atau batasan.** Chart kamu men
 
 ---
 
+## 🗺️ Chart = Blueprint, Bukan Takdir
+
+Natal Chart adalah **peta potensi** — bukan penjara.
+
+### Kamu Punya Agency
+
+| | |
+|---|---|
+| ✋ **Kamu Bisa Menolak** | Blueprint menunjukkan kecenderungan, tapi kamu punya free will untuk memilih arah lain. |
+| ⚡ **Kamu Bisa Mempercepat** | Melihat pattern berarti kamu bisa work smarter, bukan cuma harder. |
+| 🛤️ **Kamu Bisa Mengikuti** | Flow dengan energi alamimu — bukan melawan, tapi juga bukan pasrah. |
+
+> Setiap decision yang kamu ambil membawa dampak. Chart membantu kamu membuat decision yang lebih **aware** — bukan lebih terbatas.
+
+---
+
 *"The stars incline, they do not compel."*  
 *Bintang-bintang membimbing, tidak memaksa.*
 

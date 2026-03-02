@@ -81,6 +81,29 @@ Chart menunjukkan kecenderungan, bukan takdir.`
   quote: {
     text: "The stars incline, they do not compel.",
     translation: "Bintang-bintang membimbing, tidak memaksa."
+  },
+
+  blueprint: {
+    title: "🗺️ Chart = Blueprint, Bukan Takdir",
+    description: "Natal Chart adalah peta potensi — bukan penjara.",
+    points: [
+      {
+        icon: "✋",
+        title: "Kamu Bisa Menolak",
+        desc: "Blueprint menunjukkan kecenderungan, tapi kamu punya free will untuk memilih arah lain."
+      },
+      {
+        icon: "⚡",
+        title: "Kamu Bisa Mempercepat",
+        desc: "Melihat pattern berarti kamu bisa work smarter, bukan cuma harder."
+      },
+      {
+        icon: "🛤️",
+        title: "Kamu Bisa Mengikuti",
+        desc: "Flow dengan energi alamimu — bukan melawan, tapi juga bukan pasrah."
+      }
+    ],
+    closing: "Setiap decision membawa dampak. Chart membantu kamu membuat decision yang lebih aware."
   }
 };
 

@@ -20,6 +20,7 @@ export default function WelcomeModal({ onClose, onStart }: WelcomeModalProps) {
     'data',
     'creator',
     'usecases',
+    'blueprint',
     'disclaimer'
   ] as const;
 
@@ -44,13 +45,12 @@ export default function WelcomeModal({ onClose, onStart }: WelcomeModalProps) {
               {content.subheadline}
             </p>
             <div className="flex justify-center gap-2 mt-8">
-              <span className="w-2 h-2 rounded-full bg-purple-500" />
-              <span className="w-2 h-2 rounded-full bg-slate-600" />
-              <span className="w-2 h-2 rounded-full bg-slate-600" />
-              <span className="w-2 h-2 rounded-full bg-slate-600" />
-              <span className="w-2 h-2 rounded-full bg-slate-600" />
-              <span className="w-2 h-2 rounded-full bg-slate-600" />
-              <span className="w-2 h-2 rounded-full bg-slate-600" />
+              {sections.map((_, i) => (
+                <span 
+                  key={i} 
+                  className={`w-2 h-2 rounded-full ${i === 0 ? 'bg-purple-500' : 'bg-slate-600'}`}
+                />
+              ))}
             </div>
           </div>
         );
@@ -161,6 +161,28 @@ export default function WelcomeModal({ onClose, onStart }: WelcomeModalProps) {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        );
+
+      case 'blueprint':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white text-center">{content.blueprint.title}</h2>
+            <p className="text-slate-400 text-center">{content.blueprint.description}</p>
+            <div className="space-y-3">
+              {content.blueprint.points.map((point, i) => (
+                <div key={i} className="flex items-start gap-4 p-4 bg-slate-800/50 rounded-xl">
+                  <span className="text-2xl">{point.icon}</span>
+                  <div>
+                    <h4 className="font-medium text-white">{point.title}</h4>
+                    <p className="text-sm text-slate-400">{point.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="p-4 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-xl border border-purple-500/30">
+              <p className="text-slate-300 text-sm text-center">{content.blueprint.closing}</p>
             </div>
           </div>
         );
