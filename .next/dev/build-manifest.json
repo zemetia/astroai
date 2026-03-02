@@ -1,0 +1,25 @@
+{
+  "pages": {
+    "/_app": []
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/488e3_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [
+    "static/development/_ssgManifest.js",
+    "static/development/_buildManifest.js"
+  ],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_2059dcee._.js",
+    "static/chunks/488e3_next_dist_compiled_react-dom_96dfca5f._.js",
+    "static/chunks/488e3_next_dist_compiled_react-server-dom-turbopack_7c18acec._.js",
+    "static/chunks/488e3_next_dist_compiled_next-devtools_index_e4979af4.js",
+    "static/chunks/488e3_next_dist_compiled_1d2e480f._.js",
+    "static/chunks/488e3_next_dist_client_7ea5fe67._.js",
+    "static/chunks/488e3_next_dist_06f3bb76._.js",
+    "static/chunks/488e3_@swc_helpers_cjs_8b9d7017._.js",
+    "static/chunks/projects_astroai_a0ff3932._.js",
+    "static/chunks/turbopack-projects_astroai_2893bb16._.js"
+  ]
+}
