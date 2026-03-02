@@ -1,0 +1,575 @@
+// AstroAI Platform - Prisma Database Schema
+// Version: 1.0
+// Date: 2 Maret 2026
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPPORT
+}
+
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+  PRO
+  BUSINESS
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAST_DUE
+  TRIALING
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  VIRTUAL_ACCOUNT
+  E_WALLET
+  BANK_TRANSFER
+}
+
+enum PaymentProvider {
+  MIDTRANS
+  XENDIT
+}
+
+enum HouseSystem {
+  PLACIDUS
+  KOCH
+  EQUAL
+  WHOLE_SIGN
+  CAMPANUS
+  REGIOMONTANUS
+  PORPHYRY
+  MORINUS
+}
+
+enum ReadingType {
+  PERSONAL_NATAL
+  BUSINESS_ANALYSIS
+  RELATIONSHIP_SYNASTRY
+  RELOCATION_ANALYSIS
+  ELECTIONAL_TIMING
+  TRANSIT_FORECAST
+  COMPOSITE_CHART
+}
+
+enum Planet {
+  SUN
+  MOON
+  MERCURY
+  VENUS
+  MARS
+  JUPITER
+  SATURN
+  URANUS
+  NEPTUNE
+  PLUTO
+  CHIRON
+  NORTH_NODE
+  SOUTH_NODE
+  LILITH
+  ASCENDANT
+  MIDHEAVEN
+  DESCENDANT
+  IC
+}
+
+enum ZodiacSign {
+  ARIES
+  TAURUS
+  GEMINI
+  CANCER
+  LEO
+  VIRGO
+  LIBRA
+  SCORPIO
+  SAGITTARIUS
+  CAPRICORN
+  AQUARIUS
+  PISCES
+}
+
+enum AspectType {
+  CONJUNCTION
+  SEXTILE
+  SQUARE
+  TRINE
+  OPPOSITION
+  QUINCUNX
+  SEMISEXTILE
+  SEMISQUARE
+  SESQUIQUADRATE
+}
+
+enum PatternType {
+  GRAND_TRINE
+  T_SQUARE
+  GRAND_CROSS
+  YOD
+  STELLIUM
+  KITE
+  MYSTIC_RECTANGLE
+}
+
+// ============================================================================
+// USER MODULE
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  
+  // Profile
+  name          String?
+  image         String?
+  bio           String?   @db.Text
+  phone         String?
+  
+  // Security
+  password      String?
+  role          UserRole  @default(USER)
+  
+  // Metadata
+  timezone      String    @default("Asia/Jakarta")
+  locale        String    @default("id")
+  
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  
+  charts        NatalChart[]
+  readings      Reading[]
+  subscriptions Subscription[]
+  payments      Payment[]
+  
+  // Audit
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  
+  // Soft delete
+  deletedAt     DateTime?
+  isDeleted     Boolean   @default(false)
+  
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================================
+// CHART MODULE
+// ============================================================================
+
+model NatalChart {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  chartType   String   @default("natal")
+  
+  // Birth data
+  birthDate   DateTime
+  birthTime   String
+  timezone    String
+  
+  // Location
+  locationName String
+  latitude    Float
+  longitude   Float
+  countryCode String?
+  
+  houseSystem HouseSystem @default(PLACIDUS)
+  
+  // Relations
+  planets     PlanetPosition[]
+  houses      HouseCusp[]
+  aspects     Aspect[]
+  patterns    Pattern[]
+  readings    Reading[]
+  
+  // Metadata
+  isPublic    Boolean  @default(false)
+  isFavorite  Boolean  @default(false)
+  tags        String[]
+  notes       String?  @db.Text
+  
+  // Audit
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  calculatedAt DateTime?
+  
+  @@index([userId])
+  @@index([birthDate])
+  @@map("natal_charts")
+}
+
+model PlanetPosition {
+  id          String     @id @default(cuid())
+  chartId     String
+  chart       NatalChart @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  
+  planet      Planet
+  sign        ZodiacSign
+  degree      Float
+  minute      Int
+  second      Float
+  
+  house       Int
+  houseCusp   Float?
+  
+  isRetrograde Boolean  @default(false)
+  speed       Float?
+  dignity     String?
+  
+  @@unique([chartId, planet])
+  @@index([chartId])
+  @@map("planet_positions")
+}
+
+model HouseCusp {
+  id          String     @id @default(cuid())
+  chartId     String
+  chart       NatalChart @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  
+  house       Int
+  sign        ZodiacSign
+  degree      Float
+  minute      Int
+  second      Float
+  
+  rulerPlanet Planet?
+  rulerSign   ZodiacSign?
+  
+  @@unique([chartId, house])
+  @@index([chartId])
+  @@map("house_cusps")
+}
+
+model Aspect {
+  id          String     @id @default(cuid())
+  chartId     String
+  chart       NatalChart @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  
+  planet1     Planet
+  planet2     Planet
+  aspectType  AspectType
+  
+  orb         Float
+  isApplying  Boolean
+  
+  degree1     Float
+  degree2     Float
+  strength    Float?
+  
+  @@unique([chartId, planet1, planet2, aspectType])
+  @@index([chartId])
+  @@index([aspectType])
+  @@map("aspects")
+}
+
+model Pattern {
+  id          String     @id @default(cuid())
+  chartId     String
+  chart       NatalChart @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  
+  patternType PatternType
+  planets     Planet[]
+  
+  description String?    @db.Text
+  significance String?   @db.Text
+  orb         Float
+  
+  @@index([chartId])
+  @@index([patternType])
+  @@map("patterns")
+}
+
+// ============================================================================
+// READING MODULE
+// ============================================================================
+
+model Reading {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  chartId     String
+  chart       NatalChart @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  
+  secondaryChartId String?
+  
+  readingType ReadingType
+  title       String
+  
+  content     Json
+  summary     String   @db.Text
+  
+  sections    ReadingSection[]
+  
+  keyTakeaways String[]
+  actionableGuidance String[] @db.Text
+  
+  aiModel     String
+  promptVersion String
+  tokensUsed  Int?
+  confidence  Float?
+  
+  isFavorite  Boolean  @default(false)
+  userNotes   String?  @db.Text
+  rating      Int?
+  
+  shareId     String?  @unique
+  isPublic    Boolean  @default(false)
+  viewCount   Int      @default(0)
+  
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+  
+  @@index([userId])
+  @@index([chartId])
+  @@index([readingType])
+  @@index([createdAt])
+  @@map("readings")
+}
+
+model ReadingSection {
+  id          String   @id @default(cuid())
+  readingId   String
+  reading     Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
+  
+  order       Int
+  title       String
+  content     String   @db.Text
+  
+  highlights  String[]
+  planets     Planet[]
+  houses      Int[]
+  
+  confidence  Float?
+  
+  @@index([readingId])
+  @@index([order])
+  @@map("reading_sections")
+}
+
+// ============================================================================
+// SUBSCRIPTION MODULE
+// ============================================================================
+
+model Subscription {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  tier        SubscriptionTier
+  status      SubscriptionStatus
+  
+  price       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("IDR")
+  interval    String
+  
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  trialEnd    DateTime?
+  
+  cancelAtPeriodEnd Boolean @default(false)
+  cancelledAt DateTime?
+  
+  provider    PaymentProvider
+  providerSubscriptionId String?
+  
+  usageLimits Json
+  usageCurrent Json
+  
+  payments    Payment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([currentPeriodEnd])
+  @@map("subscriptions")
+}
+
+model SubscriptionPlan {
+  id          String   @id @default(cuid())
+  
+  tier        SubscriptionTier @unique
+  name        String
+  description String   @db.Text
+  
+  monthlyPrice Decimal @db.Decimal(10, 2)
+  yearlyPrice  Decimal @db.Decimal(10, 2)
+  currency     String  @default("IDR")
+  
+  features    Json
+  
+  maxCharts   Int
+  maxReadingsPerMonth Int
+  maxAstroCartography Int
+  maxSynastry Int
+  
+  aiTokensPerMonth Int
+  advancedAI       Boolean @default(false)
+  
+  isActive    Boolean  @default(true)
+  isPublic    Boolean  @default(true)
+  displayOrder Int     @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("subscription_plans")
+}
+
+// ============================================================================
+// PAYMENT MODULE
+// ============================================================================
+
+model Payment {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  
+  amount      Decimal  @db.Decimal(10, 2)
+  currency    String   @default("IDR")
+  
+  status      PaymentStatus
+  method      PaymentMethod?
+  provider    PaymentProvider
+  
+  providerOrderId     String?
+  providerTransactionId String?
+  
+  description String?
+  metadata    Json?
+  
+  paidAt      DateTime?
+  failedAt    DateTime?
+  refundedAt  DateTime?
+  
+  webhookPayload Json?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([subscriptionId])
+  @@index([status])
+  @@index([providerTransactionId])
+  @@map("payments")
+}
+
+// ============================================================================
+// AUDIT & ANALYTICS
+// ============================================================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  
+  userId      String?
+  action      String   // e.g., "chart.created", "reading.generated"
+  entityType  String   // e.g., "chart", "reading", "payment"
+  entityId    String?
+  
+  oldValue    Json?
+  newValue    Json?
+  
+  ipAddress   String?
+  userAgent   String?
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model ApiUsage {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  endpoint    String
+  method      String
+  
+  statusCode  Int
+  responseTime Int     // milliseconds
+  
+  timestamp   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([endpoint])
+  @@index([timestamp])
+  @@map("api_usage")
+}
