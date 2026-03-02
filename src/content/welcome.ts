@@ -120,6 +120,11 @@ Analognya: Kamu adalah gitar.
 • Ramalan: "Gitar ini patah bulan depan" (tebakan)
 • AstroAI: "Gitar ini untuk jazz, bass-nya kuat" (memahami purpose)
 
+Chart = Blueprint, bukan takdir.
+• ✋ Bisa menolak kecenderungan
+• ⚡ Bisa mempercepat dengan aware
+• 🛤️ Bisa mengikuti flow dengan lebih baik
+
 Dibuat oleh polymath (math, fisika, CS, psikologi, musik, filsafat) — bukan dukun digital.
 
 Gunakan untuk: mengenal diri, hubungan, bisnis, relocation, atau **have fun aje!** 🎉
