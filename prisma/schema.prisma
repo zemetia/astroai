@@ -266,6 +266,71 @@ model NatalChart {
   @@map("natal_charts")
 }
 
+// ============================================================================
+// PERSONAL CONTEXT MODULE
+// ============================================================================
+
+model PersonalContext {
+  id          String   @id @default(cuid())
+  
+  chartId     String   @unique
+  chart       NatalChart @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  
+  // Demographics
+  ethnicity   String?
+  ethnicityDetail String?
+  religion    String?
+  religiousPractice String?
+  nationality String
+  
+  // Birth
+  birthLocationCity String
+  birthLocationCountry String
+  birthLocationHospital String?
+  birthOrder  Int?
+  siblingsCount Int?
+  
+  // Family
+  fatherOccupation String?
+  motherOccupation String?
+  familyEconomicStatus String?
+  
+  // Cultural
+  culturalValues String[] @default([])
+  nativeLanguages String[] @default([])
+  preferredLanguage String @default("id")
+  
+  // Current Location
+  currentLocationCity String
+  currentLocationCountry String
+  currentLocationSince DateTime
+  
+  // Relocation History (stored as JSON)
+  relocationHistory Json @default("[]")
+  
+  // Life
+  currentLifeStage String
+  relationshipStatus String
+  hasChildren Boolean @default(false)
+  childrenCount Int?
+  
+  // Career
+  educationLevel String?
+  fieldOfStudy String?
+  currentIndustry String?
+  
+  // Additional
+  healthConsiderations String? @db.Text
+  significantLifeEvents String? @db.Text
+  
+  // Metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([chartId])
+  @@map("personal_contexts")
+}
+
 model PlanetPosition {
   id          String     @id @default(cuid())
   chartId     String
