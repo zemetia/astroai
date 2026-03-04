@@ -145,7 +145,7 @@ export function calculatePlanet(
 ): PlanetPosition {
   // SEFLG_SPEED to get speed data (for retrograde detection)
   const flags = sweph.SEFLG_SPEED;
-  const result = sweph.swe_calc_ut(julianDay, planetId, flags) as any;
+  const result = sweph.swe_calc_ut(julianDay, planetId, flags);
   
   const longitude = result.longitude;
   const signIndex = Math.floor(longitude / 30) % 12;
@@ -193,7 +193,7 @@ export function calculateHouses(
     houseSystem
   );
   
-  const houses: HouseCusp[] = (result as any).house.map((cusp: number, index: number) => {
+  const houses: HouseCusp[] = result.house.map((cusp, index) => {
     const signIndex = Math.floor(cusp / 30) % 12;
     return {
       house: index + 1,
@@ -206,10 +206,10 @@ export function calculateHouses(
   return {
     houses,
     angles: {
-      ascendant: (result as any).ascendant,
-      mc: (result as any).mc,
-      descendant: ((result as any).ascendant + 180) % 360,
-      ic: ((result as any).mc + 180) % 360,
+      ascendant: result.ascendant,
+      mc: result.mc,
+      descendant: (result.ascendant + 180) % 360,
+      ic: (result.mc + 180) % 360,
     },
   };
 }
